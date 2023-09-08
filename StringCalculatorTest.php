@@ -63,23 +63,45 @@ class StringCalculatorTest extends TestCase
     );
   }
 
-  public function testThrowsErrorForDuplicateDelimiter(): void
+  /**
+   * @dataProvider delimiterAtEnd
+   */
+  public function testThrowsErrorForDelimiterAtEnd($input): void
   {
-    $params = "175.2,\n35";
-
     $this->assertSame(
-      'Number expected but \'\n\' found at position 6.',
-      StringCalculator::add($params)
+      'Number expected but EOF found.',
+      StringCalculator::add($input)
     );
   }
 
-  public function testThrowsErrorForDuplicateDelimiterNewlineFirst(): void
+  public static function delimiterAtEnd() 
   {
-    $params = "175.2\n,35";
+    return [
+        ["1,3,"],
+        ["1\n3\n"],
+        ["1\n3,"],
+        ["1,3\n"],
+    ];
+  }
 
+  /**
+   * @dataProvider invalidDelimiters
+   */
+  public function testThrowsErrorForDuplicateDelimiter($input, $delimiter, $position): void
+  {
     $this->assertSame(
-      'Number expected but \',\' found at position 6.',
-      StringCalculator::add($params)
+      "Number expected but '{$delimiter}' found at position {$position}.",
+      StringCalculator::add($input)
     );
+  }
+
+  public static function invalidDelimiters() 
+  {
+    return [
+        'comma/newline' => ["1,\n3", '\n', 2],
+        'newline/comma' => ["1\n,3", ',', 2],
+        'comma/comma' => ["1,,3", ',', 2],
+        'newline/newline' => ["1\n\n3", '\n', 2],
+    ];
   }
 }
