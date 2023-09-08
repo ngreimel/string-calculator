@@ -31,4 +31,26 @@ class StringCalculatorTest extends TestCase
       $twoFloats = "1.1,2.2";
       $this->assertSame("3.3", StringCalculator::add($twoFloats));
     }
+
+    public function testAcceptsTwoFloatsAndSpaces(): void
+    {
+      $twoFloats = "1.1        ,2.2";
+      $this->assertSame("3.3", StringCalculator::add($twoFloats));
+    }
+
+    public function testAcceptsUnknownQuantityOfNumbers(): void
+    {
+        $manyNumbers = [];
+        $limit = rand(0,20);
+
+        for ($i=0; $i < $limit; $i++) {
+            $manyNumbers[]= rand(0,20);
+        }
+
+        $this->assertSame(
+            (string) array_sum($manyNumbers), 
+            StringCalculator::add(implode(',',$manyNumbers))
+        );
+    }
+
 }

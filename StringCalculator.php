@@ -6,7 +6,8 @@ class StringCalculator
 {
   public static function add(string $string): string
   {
-    return (string) (empty($string) ? 0 : array_sum(explode(',', $string)));
+    $values = explode(',',str_replace(' ','',$string));
+    return (string) (array_sum($values));
   }
 }
 
